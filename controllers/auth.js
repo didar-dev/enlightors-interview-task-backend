@@ -31,9 +31,9 @@ const SignIn = async (req, res) => {
   if (!isMatch) {
     return res.status(400).json({ message: "Invalid credentials" });
   }
-  // generate token
+  // generate token that expires in 1 day
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: 3600,
+    expiresIn: 86400,
   });
   return res.status(200).json({
     message: "User logged in successfully",
