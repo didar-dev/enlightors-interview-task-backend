@@ -1,15 +1,6 @@
 const express = require("express");
 const app = express();
-const knex = require("knex")({
-  client: "mysql2",
-  connection: {
-    host: "containers-us-west-16.railway.app",
-    port: 7007,
-    user: "root",
-    password: "Hy3wj0wXFBtkiiulXlR2",
-    database: "railway",
-  },
-});
+const knex = require("./utils/knex");
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
