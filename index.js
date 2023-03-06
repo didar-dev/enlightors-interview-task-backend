@@ -3,6 +3,8 @@ const app = express();
 const knex = require("./utils/knex");
 const auth = require("./routes/auth");
 const blog = require("./routes/blog");
+const cors = require("cors");
+app.use(cors());
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
