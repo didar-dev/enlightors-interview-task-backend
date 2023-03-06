@@ -46,6 +46,18 @@ const SignIn = async (req, res) => {
     token,
   });
 };
-
+const Me = async (req, res) => {
+  const user = await knex("users").where({ id: req.user.id }).first();
+  return res.status(200).json({
+    message: "User fetched successfully",
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
+};
 exports.SignUp = SignUp;
 exports.SignIn = SignIn;
+exports.Me = Me;

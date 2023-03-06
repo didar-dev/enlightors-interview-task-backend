@@ -10,8 +10,7 @@ module.exports = (req, res, next) => {
       return res.status(401).json({ message: "Auth failed!" });
     }
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    /// if token is not valid, it will throw an error
-    req.userData = { userId: decodedToken.id };
+    req.user = { id: decodedToken.id };
     next();
   } catch (error) {
     return res.status(401).json({ message: "Auth failed!" });
