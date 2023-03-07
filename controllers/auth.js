@@ -21,7 +21,6 @@ const SignUp = async (req, res) => {
 };
 const SignIn = async (req, res) => {
   const { email, password } = req.body;
-  /// get user from database
   const user = await knex("users").where({ email }).first();
   if (!user) {
     return res.status(400).json({ message: "User does not exist" });
@@ -32,15 +31,21 @@ const SignIn = async (req, res) => {
     return res.status(400).json({ message: "Invalid credentials" });
   }
   // generate token that expires in 1 day
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: 86400,
-  });
+  const token = jwt.sign(
+    { id: user.id, role: user.role },
+
+    process.env.JWT_SECRET,
+    {
+      expiresIn: 86400,
+    }
+  );
   return res.status(200).json({
     message: "User logged in successfully",
     user: {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
     },
 
     token,
