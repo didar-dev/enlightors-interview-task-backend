@@ -16,5 +16,18 @@ const articles = async (req, res) => {
     articles,
   });
 };
+const createArticle = async (req, res) => {
+  const { title, description, image } = req.body;
+  const article = await knex("articles").insert({
+    title,
+    description,
+    image,
+  });
+  return res.status(200).json({
+    message: "Article created successfully",
+    article,
+  });
+};
 
+module.exports.createArticle = createArticle;
 exports.articles = articles;
