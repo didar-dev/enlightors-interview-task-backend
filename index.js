@@ -28,6 +28,8 @@ knex.raw("SELECT 1+1 AS result").then(() => {
   console.log("Connected to database!");
 });
 
+//
+
 // Routes
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -52,3 +54,49 @@ app.use((error, req, res, next) => {
 app.listen(3000, () => {
   console.log("Server started on port 3000");
 });
+
+////// knex.js
+// knex.schema
+//   .createTable("users", function (table) {
+//     table.increments("id");
+//     table.string("name");
+//     table.string("email");
+//     table.string("password");
+//     table.enu("role", ["super_admin", "admin", "user"]).defaultTo("user");
+//   })
+//   .then(function () {
+//     // Create the Articles table
+//     return knex.schema.createTable("articles", function (table) {
+//       table.increments("id");
+//       table.string("image");
+//       table.string("title");
+//       table.string("description");
+//       table.integer("user_id").unsigned().references("id").inTable("users");
+//     });
+//   })
+//   .then(function () {
+//     // Create the Clients table
+//     return knex.schema.createTable("clients", function (table) {
+//       table.increments("id");
+//       table.string("name");
+//       table.string("contact_number");
+//       table.date("joined_date");
+//     });
+//   })
+//   .then(function () {
+//     // Create the Meetings table
+//     return knex.schema.createTable("meetings", function (table) {
+//       table.increments("id");
+//       table.integer("user_id").unsigned().references("id").inTable("users");
+//       table.integer("client_id").unsigned().references("id").inTable("clients");
+//       table.date("date");
+//       table.text("minutes_of_meeting");
+//       table.date("next_meeting_date");
+//     });
+//   })
+//   .catch(function (error) {
+//     console.error(error);
+//   })
+//   .finally(function () {
+//     knex.destroy();
+//   });

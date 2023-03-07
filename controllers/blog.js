@@ -1,14 +1,8 @@
 const knex = require("../utils/knex");
 const fs = require("fs");
 const articles = async (req, res) => {
-  const hasTable = await knex.schema.hasTable("articles");
-  if (!hasTable) {
-    await knex.schema.createTable("articles", (table) => {
-      table.increments("id");
-      table.string("title");
-      table.string("description");
-      table.string("image");
-    });
+  if (!req.isAuth) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
   const articles = await knex("articles").select("*");
   return res.status(200).json({
@@ -25,6 +19,7 @@ const createArticle = async (req, res) => {
       image:
         `uploads/images/${formData.title}.` +
         req.file.originalname.split(".")[1],
+      user_id: req.user.id,
     });
   } catch (error) {
     fs.unlink(req.file.path, (err) => {

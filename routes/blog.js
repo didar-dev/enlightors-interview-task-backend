@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const authOnly = require("../middleware/authOnly");
-const AdminOnly = require("../middleware/AdminOnly");
+const verifyJWT = require("../middleware/verifyJWT");
 const fileUpload = require("../middleware/file-upload");
 const { articles, createArticle } = require("../controllers/blog");
-router.use(authOnly);
-router.post("/articles", articles);
-router.use(AdminOnly);
+router.use(verifyJWT);
+router.get("/articles", articles);
 router.post("/create", fileUpload.single("image"), createArticle);
 module.exports = router;
