@@ -4,7 +4,7 @@ const path = require("path");
 const app = express();
 const cors = require("cors");
 const knex = require("./utils/knex");
-const blog = require("./routes/blog");
+const article = require("./routes/article");
 const auth = require("./routes/auth");
 const cookieParser = require("cookie-parser");
 app.use(cors({ credentials: true, origin: true }));
@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 });
 app.use("/auth", auth);
 
-app.use("/blog", blog);
+app.use("/article", article);
 
 app.use((error, req, res, next) => {
   if (req.file) {

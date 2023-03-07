@@ -6,9 +6,9 @@ const {
   articles,
   createArticle,
   deleteArticle,
-} = require("../controllers/blog");
+} = require("../controllers/article");
 router.use(verifyJWT);
 router.get("/articles", articles);
 router.post("/create", fileUpload.single("image"), createArticle);
-router.delete("/article/delete/:id", deleteArticle);
+router.delete("/delete/:id", deleteArticle);
 module.exports = router;
