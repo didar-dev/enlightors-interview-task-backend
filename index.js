@@ -24,12 +24,6 @@ app.use((req, res, next) => {
   next();
 });
 
-knex.raw("SELECT 1+1 AS result").then(() => {
-  console.log("Connected to database!");
-});
-
-//
-
 // Routes
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -55,14 +49,16 @@ app.listen(3000, () => {
   console.log("Server started on port 3000");
 });
 
-////// knex.js
 // knex.schema
 //   .createTable("users", function (table) {
 //     table.increments("id");
 //     table.string("name");
 //     table.string("email");
 //     table.string("password");
+//     table.string("active").defaultTo("false");
 //     table.enu("role", ["super_admin", "admin", "user"]).defaultTo("user");
+
+//     table.timestamps(true, true); // add createdAt and updatedAt columns
 //   })
 //   .then(function () {
 //     // Create the Articles table
@@ -72,6 +68,8 @@ app.listen(3000, () => {
 //       table.string("title");
 //       table.string("description");
 //       table.integer("user_id").unsigned().references("id").inTable("users");
+
+//       table.timestamps(true, true); // add createdAt and updatedAt columns
 //     });
 //   })
 //   .then(function () {
@@ -81,6 +79,8 @@ app.listen(3000, () => {
 //       table.string("name");
 //       table.string("contact_number");
 //       table.date("joined_date");
+
+//       table.timestamps(true, true); // add createdAt and updatedAt columns
 //     });
 //   })
 //   .then(function () {
@@ -92,6 +92,15 @@ app.listen(3000, () => {
 //       table.date("date");
 //       table.text("minutes_of_meeting");
 //       table.date("next_meeting_date");
+//       table.timestamps(true, true);
+//     });
+//   })
+//   .then(function () {
+//     return knex.schema.createTable("Logs", function (table) {
+//       table.increments("id");
+//       table.integer("user_id").unsigned().references("id").inTable("users");
+//       table.text("action");
+//       table.timestamps(true, true); // add createdAt and updatedAt columns
 //     });
 //   })
 //   .catch(function (error) {
