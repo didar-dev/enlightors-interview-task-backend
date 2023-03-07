@@ -74,6 +74,47 @@ const deleteArticle = async (req, res) => {
   await knex("articles").where("id", req.params.id).del();
   return res.status(200).json({ message: "Article deleted successfully" });
 };
-module.exports.deleteArticle = deleteArticle;
-module.exports.createArticle = createArticle;
+
+const editArticle = async (req, res) => {
+  if (!req.isAuth) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  if (!req.user.role === "admin" || !req.user.role === "super_admin") {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const formData = req.body;
+  const article = await knex("articles").where("id", req.params.id).first();
+  if (!article) {
+    return res.status(404).json({ message: "Article not found" });
+  }
+  if (req.file) {
+    if (article.image !== "#") {
+      fs.unlink(article.image, (err) => {
+        console.log(err);
+      });
+    }
+    fs.rename(
+      req.file.path,
+      `uploads/images/${formData.title}.` + req.file.originalname.split(".")[1],
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+  await knex("articles")
+    .where("id", req.params.id)
+    .update({
+      title: formData.title,
+      description: formData.description,
+      image: req.file
+        ? `uploads/images/${formData.title}.` +
+          req.file.originalname.split(".")[1]
+        : article.image,
+    });
+  return res.status(200).json({ message: "Article updated successfully" });
+};
+
+exports.editArticle = editArticle;
+exports.deleteArticle = deleteArticle;
+exports.createArticle = createArticle;
 exports.articles = articles;

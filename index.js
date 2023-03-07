@@ -6,6 +6,7 @@ const cors = require("cors");
 const knex = require("./utils/knex");
 const article = require("./routes/article");
 const auth = require("./routes/auth");
+const users = require("./routes/users");
 const cookieParser = require("cookie-parser");
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
@@ -13,23 +14,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
-
-  next();
-});
 
 // Routes
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 app.use("/auth", auth);
-
+app.use("/users", users);
 app.use("/article", article);
 
 app.use((error, req, res, next) => {

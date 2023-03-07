@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const verifyJWT = require("../middleware/verifyJWT");
-const { SignUp, SignIn, Me } = require("../controllers/auth");
-router.post("/signup", SignUp);
-router.post("/signin", SignIn);
+const { AllUsers } = require("../controllers/users");
 router.use(verifyJWT);
-router.get("/me", Me);
+router.get("/all", AllUsers);
 
 module.exports = router;
