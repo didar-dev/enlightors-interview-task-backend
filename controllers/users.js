@@ -30,6 +30,18 @@ const DeleteUser = async (req, res) => {
   if (!req.user.role === "super_admin" || !req.user.role === "admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
+  const userExists = await knex("users").where("id", req.params.id).first();
+  
+  const UserRole = userExists.role;
+  /// admin cant delete admin or super admin
+  if (
+    req.user.role === "admin" &&
+    (UserRole === "admin" || UserRole === "super_admin")
+  ) {
+    return res.status(400).json({
+      message: "You are not allowed to do this",
+    });
+  }
   const { id } = req.params;
   const user = await knex("users").where("id", id).del();
   return res.status(200).json({
@@ -80,6 +92,7 @@ const EditUser = async (req, res) => {
   if (!req.user.role === "super_admin" || !req.user.role === "admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
+
   const { id } = req.params;
   const { name, email, password, role, active } = req.body;
   if (!name || !email || !role || !active) {

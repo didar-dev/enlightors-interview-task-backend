@@ -41,6 +41,7 @@ const DeleteClient = async (req, res) => {
     });
   }
   const client = await knex("clients").where("id", id).del();
+
   return res.status(200).json({
     message: "Client deleted successfully",
     client,
