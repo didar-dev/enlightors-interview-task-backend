@@ -7,6 +7,7 @@ const knex = require("./utils/knex");
 const article = require("./routes/article");
 const auth = require("./routes/auth");
 const users = require("./routes/users");
+const clients = require("./routes/clients");
 const cookieParser = require("cookie-parser");
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 app.use("/auth", auth);
 app.use("/users", users);
 app.use("/article", article);
+app.use("/clients", clients);
 
 app.use((error, req, res, next) => {
   if (req.file) {
