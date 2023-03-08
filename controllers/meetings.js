@@ -5,9 +5,6 @@ const meetings = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  /// based onthe req.user.role
-  /// admin can only see his meetings
-  /// super admin can see all meetings
   const role = req.user.role;
   const user_id = req.user.id;
   let meetings;

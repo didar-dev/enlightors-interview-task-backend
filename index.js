@@ -63,7 +63,6 @@ app.listen(3000, () => {
 //       table.string("title");
 //       table.string("description");
 //       table.integer("user_id").unsigned().references("id").inTable("users");
-
 //       table.timestamps(true, true); // add createdAt and updatedAt columns
 //     });
 //   })
@@ -74,7 +73,6 @@ app.listen(3000, () => {
 //       table.string("name");
 //       table.string("contact_number");
 //       table.date("joined_date");
-
 //       table.timestamps(true, true); // add createdAt and updatedAt columns
 //     });
 //   })
@@ -82,6 +80,7 @@ app.listen(3000, () => {
 //     // Create the Meetings table
 //     return knex.schema.createTable("meetings", function (table) {
 //       table.increments("id");
+//       table.text("title").notNullable();
 //       table.integer("user_id").unsigned().references("id").inTable("users");
 //       table.integer("client_id").unsigned().references("id").inTable("clients");
 //       table.date("date");

@@ -16,7 +16,6 @@ const authOnly = (req, res, next) => {
         } catch (error) {
           return res.status(401).json({ message: "Unauthorized" });
         }
-
         req.isAuth = true;
         req.user = user;
         next();
