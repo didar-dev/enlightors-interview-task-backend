@@ -87,32 +87,24 @@ const EditUser = async (req, res) => {
       message: "Please fill all the fields",
     });
   }
-
   const userExists = await knex("users").where("email", email).first();
   if (!userExists) {
     return res.status(400).json({
       message: "User does not exists",
     });
   }
-  let isMatch = false;
-  let salt = null;
-  let hashedPassword = null;
+
+  let userUpdate = { name, email, role, active };
   if (password) {
-    isMatch = await bcrypt.compare(password, userExists.password);
+    const isMatch = await bcrypt.compare(password, userExists.password);
     if (!isMatch) {
-      salt = await bcrypt.genSalt(12);
-      hashedPassword = await bcrypt.hash(password, salt);
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      userUpdate.password = hashedPassword;
     }
   }
-  const user = await knex("users")
-    .where("id", id)
-    .update({
-      name,
-      email,
-      role,
-      password: isMatch ? userExists.password : hashedPassword,
-      active,
-    });
+
+  const user = await knex("users").where("id", id).update(userUpdate);
   return res.status(200).json({
     message: "User updated successfully",
     user,
