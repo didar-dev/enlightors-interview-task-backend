@@ -8,6 +8,7 @@ const article = require("./routes/article");
 const auth = require("./routes/auth");
 const users = require("./routes/users");
 const clients = require("./routes/clients");
+const mettings = require("./routes/meetings");
 const cookieParser = require("cookie-parser");
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
@@ -24,6 +25,7 @@ app.use("/auth", auth);
 app.use("/users", users);
 app.use("/article", article);
 app.use("/clients", clients);
+app.use("/meetings", mettings);
 
 app.use((error, req, res, next) => {
   if (req.file) {
