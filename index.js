@@ -95,7 +95,7 @@ app.listen(3000, () => {
 //     });
 //   })
 //   .catch(function (error) {
-//     console.error(error);
+//     console.error("Error creating tables: ", error);
 //   })
 //   .finally(function () {
 //     knex.destroy();
