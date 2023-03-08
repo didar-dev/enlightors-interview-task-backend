@@ -10,5 +10,6 @@ router.use(verifyJWT);
 
 router.get("/", AllClients);
 router.post("/", CreateClient);
+router.delete("/:id", DeleteClient);
 
 module.exports = router;

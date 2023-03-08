@@ -8,8 +8,6 @@ const AllClients = async (req, res) => {
   if (!req.user.role === "super_admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  /// also join mettinmgs and get client meetings
-
   const clients = await knex("clients")
     .select(
       "clients.id",
@@ -19,7 +17,7 @@ const AllClients = async (req, res) => {
       "clients.created_at",
       "clients.updated_at"
     )
-    .leftJoin("meetings", "clients.id", "=", "meetings.client_id")
+    .leftJoin("meetings", "clients.id", "meetings.client_id")
     .groupBy("clients.id")
     .count("meetings.id as meetings_count");
   return res.status(200).json({
@@ -35,6 +33,13 @@ const DeleteClient = async (req, res) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const { id } = req.params;
+  /// check if client has any meetings
+  const clientMeetings = await knex("meetings").where("client_id", id).first();
+  if (clientMeetings) {
+    return res.status(400).json({
+      message: "Client has meetings, cannot delete",
+    });
+  }
   const client = await knex("clients").where("id", id).del();
   return res.status(200).json({
     message: "Client deleted successfully",
@@ -48,7 +53,7 @@ const CreateClient = async (req, res) => {
   if (!req.user.role === "super_admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  const { name, contact_number } = req.body;
+  const { name, contact_number, joined_date } = req.body;
   if (!name || !contact_number) {
     return res.status(400).json({
       message: "Please fill all the fields",
@@ -66,7 +71,7 @@ const CreateClient = async (req, res) => {
   const client = await knex("clients").insert({
     name,
     contact_number,
-    joined_date: new Date(),
+    joined_date: joined_date || new Date(),
   });
   return res.status(200).json({
     message: "Client created successfully",
