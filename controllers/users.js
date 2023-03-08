@@ -6,7 +6,7 @@ const AllUsers = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin") {
+  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const users = await knex("users").select(
@@ -27,7 +27,7 @@ const DeleteUser = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin") {
+  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const { id } = req.params;
@@ -41,7 +41,7 @@ const CreateUser = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin") {
+  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -77,7 +77,7 @@ const EditUser = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin") {
+  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const { id } = req.params;
