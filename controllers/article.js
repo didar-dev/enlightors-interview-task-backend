@@ -1,5 +1,8 @@
 const knex = require("../utils/knex");
 const fs = require("fs");
+const { encode } = require("blurhash");
+const Jimp = require("jimp");
+
 const articles = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -20,6 +23,17 @@ const createArticle = async (req, res) => {
   if (!req.user.role === "admin" || !req.user.role === "super_admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
+  /// create blurhash
+  let blurhash = "";
+  if (req.file) {
+    const image = await Jimp.read(req.file.path);
+    const width = image.bitmap.width;
+    const height = image.bitmap.height;
+    const pixels = image.bitmap.data;
+    const blurhashe = encode(pixels, width, height, 4, 4);
+    blurhash = blurhashe;
+  }
+
   const formData = req.body;
   try {
     await knex("articles").insert({
@@ -29,6 +43,7 @@ const createArticle = async (req, res) => {
         ? `uploads/images/${formData.title}.` +
           req.file.originalname.split(".")[1]
         : "#",
+      image_blurhash: blurhash,
       user_id: req.user.id,
     });
   } catch (error) {

@@ -52,18 +52,18 @@ app.listen(3000, () => {
 //     table.string("password");
 //     table.string("active").defaultTo("false");
 //     table.enu("role", ["super_admin", "admin", "user"]).defaultTo("user");
-
-//     table.timestamps(true, true); // add createdAt and updatedAt columns
+//     table.timestamps(true, true);
 //   })
 //   .then(function () {
 //     // Create the Articles table
 //     return knex.schema.createTable("articles", function (table) {
 //       table.increments("id");
 //       table.string("image");
+//       table.string("image_blurhash");
 //       table.string("title");
 //       table.string("description");
 //       table.integer("user_id").unsigned().references("id").inTable("users");
-//       table.timestamps(true, true); // add createdAt and updatedAt columns
+//       table.timestamps(true, true);
 //     });
 //   })
 //   .then(function () {
@@ -73,7 +73,7 @@ app.listen(3000, () => {
 //       table.string("name");
 //       table.string("contact_number");
 //       table.date("joined_date");
-//       table.timestamps(true, true); // add createdAt and updatedAt columns
+//       table.timestamps(true, true);
 //     });
 //   })
 //   .then(function () {
@@ -94,7 +94,7 @@ app.listen(3000, () => {
 //       table.increments("id");
 //       table.integer("user_id").unsigned().references("id").inTable("users");
 //       table.text("action");
-//       table.timestamps(true, true); // add createdAt and updatedAt columns
+//       table.timestamps(true, true);
 //     });
 //   })
 //   .catch(function (error) {
