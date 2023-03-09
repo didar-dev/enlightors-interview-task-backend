@@ -2,6 +2,7 @@ const knex = require("../utils/knex");
 const fs = require("fs");
 const { encode } = require("blurhash");
 const Jimp = require("jimp");
+const logger = require("../utils/Logger");
 
 const articles = async (req, res) => {
   if (!req.isAuth) {
@@ -65,7 +66,7 @@ const createArticle = async (req, res) => {
       }
     );
   }
-
+  await logger(`Created article ${formData.title}`, req.user.id);
   return res.status(200).json({
     message: "Article created successfully",
   });
@@ -87,6 +88,7 @@ const deleteArticle = async (req, res) => {
     });
   }
   await knex("articles").where("id", req.params.id).del();
+  await logger(`Deleted article ${article.title}`, req.user.id);
   return res.status(200).json({ message: "Article deleted successfully" });
 };
 
@@ -126,6 +128,7 @@ const editArticle = async (req, res) => {
           req.file.originalname.split(".")[1]
         : article.image,
     });
+  await logger(`Edited article ${article.title}`, req.user.id);
   return res.status(200).json({ message: "Article updated successfully" });
 };
 

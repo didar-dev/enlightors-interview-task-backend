@@ -1,5 +1,6 @@
 const knex = require("../utils/knex");
 const bcrypt = require("bcryptjs");
+const logger = require("../utils/Logger");
 
 const AllClients = async (req, res) => {
   if (!req.isAuth) {
@@ -40,8 +41,14 @@ const DeleteClient = async (req, res) => {
       message: "Client has meetings, cannot delete",
     });
   }
-  const client = await knex("clients").where("id", id).del();
-
+  let client = await knex("clients").where("id", id).first();
+  if (!client) {
+    return res.status(400).json({
+      message: "Client not found",
+    });
+  }
+  await knex("clients").where("id", id).del();
+  await logger(`Deleted client ${client.name}`, req.user.id);
   return res.status(200).json({
     message: "Client deleted successfully",
     client,
@@ -74,6 +81,7 @@ const CreateClient = async (req, res) => {
     contact_number,
     joined_date: joined_date || new Date(),
   });
+  await logger(`Created client ${name}`, req.user.id);
   return res.status(200).json({
     message: "Client created successfully",
     client,
@@ -109,13 +117,22 @@ const EditClient = async (req, res) => {
     });
   }
 
-  const client = await knex("clients")
+  let client = await knex("clients").where("id", id).first();
+  if (client.length === 0) {
+    return res.status(400).json({
+      message: "Client not found",
+    });
+  }
+  await knex("clients")
     .where("id", id)
     .update({
       name,
       contact_number,
       joined_date: joined_date || new Date(),
     });
+
+  await logger(`Edited client ${client.name}`, req.user.id);
+
   return res.status(200).json({
     message: "Client updated successfully",
     client,

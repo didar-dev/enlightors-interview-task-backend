@@ -1,7 +1,7 @@
 const knex = require("../utils/knex");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const logger = require("../utils/Logger");
 const AllUsers = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -31,7 +31,7 @@ const DeleteUser = async (req, res) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const userExists = await knex("users").where("id", req.params.id).first();
-  
+
   const UserRole = userExists.role;
   /// admin cant delete admin or super admin
   if (
@@ -43,7 +43,14 @@ const DeleteUser = async (req, res) => {
     });
   }
   const { id } = req.params;
-  const user = await knex("users").where("id", id).del();
+  let user = await knex("users").where("id", id).first();
+  if (!user) {
+    return res.status(400).json({
+      message: "User not found",
+    });
+  }
+  await knex("users").where("id", id).del();
+  await logger(`Deleted user ${user.name}`, req.user.id);
   return res.status(200).json({
     message: "User deleted successfully",
     user,
@@ -80,6 +87,7 @@ const CreateUser = async (req, res) => {
     role,
     active,
   });
+  await logger(`Created user ${name}`, req.user.id);
   return res.status(200).json({
     message: "User created successfully",
     user,
@@ -116,8 +124,9 @@ const EditUser = async (req, res) => {
       userUpdate.password = hashedPassword;
     }
   }
-
-  const user = await knex("users").where("id", id).update(userUpdate);
+  let user = await knex("users").where("id", id).first();
+  await knex("users").where("id", id).update(userUpdate);
+  await logger(`Edited user ${user.name} id: ${user.id}`, req.user.id);
   return res.status(200).json({
     message: "User updated successfully",
     user,

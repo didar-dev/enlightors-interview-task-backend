@@ -1,6 +1,6 @@
 const knex = require("../utils/knex");
 const fs = require("fs");
-
+const logger = require("../utils/Logger");
 const meetings = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -72,6 +72,7 @@ const createMeeting = async (req, res) => {
     client_id,
     user_id,
   });
+  await logger(`Created a meeting with title ${title}`, user_id);
   return res.status(200).json({
     message: "Meeting created successfully",
     meeting,
@@ -85,6 +86,7 @@ const deleteMeeting = async (req, res) => {
   /// if user is admin check if the metting with him as user
   const role = req.user.role;
   const user_id = req.user.id;
+
   if (role === "admin") {
     const meeting = await knex("meetings")
       .select("meetings.id")
@@ -96,7 +98,12 @@ const deleteMeeting = async (req, res) => {
       });
     }
   }
+  const mettingtitle = await knex("meetings")
+    .select("title")
+    .where("id", id)
+    .first();
   const meeting = await knex("meetings").where("id", id).del();
+  await logger(`Deleted a meeting with title ${mettingtitle.title}`, user_id);
   return res.status(200).json({
     message: "Meeting deleted successfully",
     meeting,
@@ -114,13 +121,23 @@ const editMeeting = async (req, res) => {
       message: "Please fill all the fields",
     });
   }
-  const meeting = await knex("meetings").where("id", id).update({
+
+  let meeting = await knex("meetings").where("id", id).first();
+
+  if (!meeting) {
+    return res.status(400).json({
+      message: "Meeting not found",
+    });
+  }
+  await knex("meetings").where("id", id).update({
     title,
     date,
     minutes_of_meeting,
     next_meeting_date,
     client_id,
   });
+
+  await logger(`Edited a meeting with title ${title}`, req.user.id);
   return res.status(200).json({
     message: "Meeting updated successfully",
     meeting,
