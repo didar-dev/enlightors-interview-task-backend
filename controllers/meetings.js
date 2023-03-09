@@ -102,7 +102,32 @@ const deleteMeeting = async (req, res) => {
     meeting,
   });
 };
+const editMeeting = async (req, res) => {
+  if (!req.isAuth) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const { id } = req.params;
+  const { title, date, minutes_of_meeting, next_meeting_date, client_id } =
+    req.body;
+  if (!title || !date || !minutes_of_meeting || !client_id) {
+    return res.status(400).json({
+      message: "Please fill all the fields",
+    });
+  }
+  const meeting = await knex("meetings").where("id", id).update({
+    title,
+    date,
+    minutes_of_meeting,
+    next_meeting_date,
+    client_id,
+  });
+  return res.status(200).json({
+    message: "Meeting updated successfully",
+    meeting,
+  });
+};
 
 exports.meetings = meetings;
 exports.createMeeting = createMeeting;
 exports.deleteMeeting = deleteMeeting;
+exports.editMeeting = editMeeting;
