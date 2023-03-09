@@ -4,9 +4,10 @@ const GetLogs = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
+  if (req.user.role !== "super_admin") {
     return res.status(401).json({ message: "Unauthorized" });
   }
+
   const logs = await knex("Logs")
     .select(
       "Logs.id",

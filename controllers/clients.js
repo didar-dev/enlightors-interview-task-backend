@@ -6,9 +6,11 @@ const AllClients = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
+  /// only admin and super admin can access this route
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
+
   const clients = await knex("clients")
     .select(
       "clients.id",
@@ -30,7 +32,7 @@ const DeleteClient = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const { id } = req.params;
@@ -58,7 +60,7 @@ const CreateClient = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const { name, contact_number, joined_date } = req.body;
@@ -91,7 +93,7 @@ const EditClient = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const { id } = req.params;

@@ -6,7 +6,7 @@ const AllUsers = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const users = await knex("users").select(
@@ -27,7 +27,7 @@ const DeleteUser = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const userExists = await knex("users").where("id", req.params.id).first();
@@ -60,10 +60,9 @@ const CreateUser = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
-
   const { name, email, password, role, active } = req.body;
   /// if this feilds are empty
   if (!name || !email || !password || !role || !active) {
@@ -97,10 +96,9 @@ const EditUser = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "super_admin" || !req.user.role === "admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
-
   const { id } = req.params;
   const { name, email, password, role, active } = req.body;
   if (!name || !email || !role || !active) {

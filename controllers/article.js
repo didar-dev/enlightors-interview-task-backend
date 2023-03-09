@@ -21,7 +21,7 @@ const createArticle = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "admin" || !req.user.role === "super_admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   /// create blurhash
@@ -75,7 +75,7 @@ const deleteArticle = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "admin" || !req.user.role === "super_admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const article = await knex("articles").where("id", req.params.id).first();
@@ -96,7 +96,7 @@ const editArticle = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  if (!req.user.role === "admin" || !req.user.role === "super_admin") {
+  if (req.user.role === "user") {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const formData = req.body;
