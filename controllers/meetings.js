@@ -55,9 +55,14 @@ const createMeeting = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  // we dont care for role admin and superadmin can create mettings
   const { title, date, minutes_of_meeting, next_meeting_date, client_id } =
     req.body;
+  if (!title || !date || !minutes_of_meeting || !client_id) {
+    return res.status(400).json({
+      message: "Please fill all the fields",
+    });
+  }
+
   const user_id = req.user.id;
   const meeting = await knex("meetings").insert({
     title,
@@ -72,6 +77,32 @@ const createMeeting = async (req, res) => {
     meeting,
   });
 };
+const deleteMeeting = async (req, res) => {
+  if (!req.isAuth) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const { id } = req.params;
+  /// if user is admin check if the metting with him as user
+  const role = req.user.role;
+  const user_id = req.user.id;
+  if (role === "admin") {
+    const meeting = await knex("meetings")
+      .select("meetings.id")
+      .where("meetings.id", id)
+      .where("meetings.user_id", user_id);
+    if (!meeting.length) {
+      return res.status(400).json({
+        message: "You are not authorized to delete this meeting",
+      });
+    }
+  }
+  const meeting = await knex("meetings").where("id", id).del();
+  return res.status(200).json({
+    message: "Meeting deleted successfully",
+    meeting,
+  });
+};
 
 exports.meetings = meetings;
 exports.createMeeting = createMeeting;
+exports.deleteMeeting = deleteMeeting;
