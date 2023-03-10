@@ -8,6 +8,10 @@ const articles = async (req, res) => {
   if (!req.isAuth) {
     return res.status(401).json({ message: "Unauthorized" });
   }
+  if (req.user.active === "false") {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
   const articles = await knex("articles")
     .select("*")
     .orderBy("created_at", "desc");

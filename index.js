@@ -3,7 +3,6 @@ const fs = require("fs");
 const path = require("path");
 const app = express();
 const cors = require("cors");
-const knex = require("./utils/knex");
 const article = require("./routes/article");
 const auth = require("./routes/auth");
 const users = require("./routes/users");

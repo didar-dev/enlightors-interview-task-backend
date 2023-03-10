@@ -18,6 +18,7 @@ const authOnly = (req, res, next) => {
         }
         req.isAuth = true;
         req.user = user;
+
         next();
       }
     });
