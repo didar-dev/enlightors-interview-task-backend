@@ -41,9 +41,8 @@ app.use((error, req, res, next) => {
   res.status(error.code || 500);
   res.json({ message: error.message || "An unknown error occurred!" });
 });
-
 app.listen(3000, () => {
-  console.log("Server started on port 3000");
+  console.log("Server is running on port 3000");
 });
 
 // knex.schema

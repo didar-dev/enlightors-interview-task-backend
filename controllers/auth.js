@@ -30,10 +30,13 @@ const SignIn = async (req, res) => {
   if (!isMatch) {
     return res.status(400).json({ message: "Invalid credentials" });
   }
-  // generate token that expires in 1 day
+  if (user.active == "false") {
+    return res
+      .status(400)
+      .json({ message: "Your account is not activated yet" });
+  }
   const token = jwt.sign(
     { id: user.id, role: user.role },
-
     process.env.JWT_SECRET,
     {
       expiresIn: 86400,
@@ -47,7 +50,6 @@ const SignIn = async (req, res) => {
       email: user.email,
       role: user.role,
     },
-
     token,
   });
 };
